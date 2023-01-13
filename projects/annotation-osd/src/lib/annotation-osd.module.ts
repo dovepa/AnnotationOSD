@@ -1,16 +1,8 @@
 import { NgModule } from '@angular/core';
-import { AnnotationOSDComponent } from './annotation-osd.component';
-
-
+import { AnnotationOSDService } from './annotation-osd.service';
 
 @NgModule({
-  declarations: [
-    AnnotationOSDComponent
-  ],
-  imports: [
-  ],
-  exports: [
-    AnnotationOSDComponent
-  ]
+    imports: [],
+    providers : [AnnotationOSDService],
 })
 export class AnnotationOSDModule { }

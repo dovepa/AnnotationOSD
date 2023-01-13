@@ -6,7 +6,10 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
-    "types": []
+    "types": [
+      "fabric",
+      "openseadragon"
+    ]
   },
   "exclude": [
     "src/test.ts",

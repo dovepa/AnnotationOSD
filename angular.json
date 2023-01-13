@@ -3,37 +3,6 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "AnnotationOSD": {
-      "projectType": "library",
-      "root": "projects/annotation-osd",
-      "sourceRoot": "projects/annotation-osd/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/annotation-osd/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/annotation-osd/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/annotation-osd/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/annotation-osd/src/test.ts",
-            "tsConfig": "projects/annotation-osd/tsconfig.spec.json",
-            "karmaConfig": "projects/annotation-osd/karma.conf.js"
-          }
-        }
-      }
-    },
     "AnnotationOSD-showcase": {
       "projectType": "application",
       "schematics": {
@@ -58,9 +27,15 @@
               "projects/annotation-osd-showcase/src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.css",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.scss",
               "projects/annotation-osd-showcase/src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "projects/annotation-osd/assets/openseadragon.min.js",
+              "projects/annotation-osd/assets/fabric.adapted.js",
+              "projects/annotation-osd/assets/openseadragon-fabricjs-overlay.js"
+              ]
           },
           "configurations": {
             "production": {
@@ -129,9 +104,61 @@
             ],
             "scripts": []
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/annotation-osd-showcase/**/*.ts",
+              "projects/annotation-osd-showcase/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "AnnotationOSD": {
+      "projectType": "library",
+      "root": "projects/annotation-osd",
+      "sourceRoot": "projects/annotation-osd/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/annotation-osd/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/annotation-osd/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/annotation-osd/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/annotation-osd/src/test.ts",
+            "tsConfig": "projects/annotation-osd/tsconfig.spec.json",
+            "karmaConfig": "projects/annotation-osd/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/annotation-osd/**/*.ts",
+              "projects/annotation-osd/**/*.html"
+            ]
+          }
         }
       }
     }
   },
-  "defaultProject": "AnnotationOSD"
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
+  },
+  "defaultProject": "AnnotationOSD-showcase"
 }
