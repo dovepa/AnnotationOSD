@@ -46,39 +46,37 @@ export class AppComponent implements OnInit {
 
     markerList : any[] = [];
 
+
     async sleep(time = 500) { return new Promise((r) => setTimeout(r, time));}
 
     async testCanvas() {
-        await this.sleep(1000);
-        this.player.setHome({ point : { x : 0.2, y:0.2 }, width : 0.45, height: 0.45, unit : 'percent' }, true);
-        await this.sleep(1000);
-        const MarkerRect1 = new MarkerRect(uid(8), this.options, 0.2, 0.2, 0.4, 0.4 );
-        this.player.addMarker(MarkerRect1);
-        this.markerList.push(MarkerRect1);
-
+        let testSet = [
+            new MarkerRect(uid(8), this.options, 0.5052390015644317, 0.08231004774664871, 0.011343781115036256, 0.013756491247526127),
+            new MarkerRound(uid(8), this.options, 0.47871194894140173, 0.39232053618287266, 0.02234813472672516),
+            new MarkerPoly(uid(8), this.options, [
+                {
+                    'x': 0.4316416962890998,
+                    'y': 0.5489801364390546,
+                },
+                {
+                    'x': 0.4386621996589047,
+                    'y': 0.5447779775592954,
+                },
+                {
+                    'x': 0.44020178373123026,
+                    'y': 0.5606621381247856,
+                },
+            ]),
+            new MarkerRound(uid(8), this.options, 0.42457606876220605, 0.23531438469184932, 0.008287245150437548),
+            new MarkerRect(uid(8), this.options, 0.4732954280435162, 0.2874712938103543, 0.005754267004021321, 0.01339302472052382),
+        ];
+        for await (const obj of testSet) {
+            this.player.addMarker(obj);
+            this.markerList.push(obj);
+            this.player.setHomePointMarker(obj.id, true);
+            await this.sleep(3000);
+        }
         await this.sleep(2000);
-        this.player.setHome({ point : { x : 200, y:200 }, width : 50, height: 500, unit : 'pixel' }, true);
-        await this.sleep(1000);
-        const MarkerRect2 = new MarkerRect(uid(8),  this.options, 200, 200, 40, 400, 'pixel');
-        this.player.addMarker(MarkerRect2);
-        this.markerList.push(MarkerRect2);
-
-        await this.sleep(2000);
-        this.player.setHome({ point : { x : 400, y: 500 }, width : 800, height: 800, unit : 'pixel' }, true);
-        await this.sleep(1000);
-        const MarkerPoly1 = new MarkerPoly(uid(8), this.options, [{ x :0, y : 0 }, { x : 200, y : 700 },
-            { x :750, y : 410 }], 'pixel');
-        this.player.addMarker(MarkerPoly1);
-        this.markerList.push(MarkerPoly1);
-
-        await this.sleep(2000);
-        this.player.setHome({ point : { x : 0.6, y: 0.6 }, width : 0.4, height: 0.4, unit : 'percent' }, true);
-        await this.sleep(1000);
-        const MarkerRound1 = new MarkerRound(uid(8), this.options, 0.6, 0.6, 0.3);
-        this.player.addMarker(MarkerRound1);
-        this.markerList.push(MarkerRound1);
-
-        await this.sleep(1000);
         this.player.unsetHome(true);
     }
 
@@ -101,10 +99,21 @@ export class AppComponent implements OnInit {
         );
         this.player.addCanvas();
 
+        this.markerList.forEach(e => this.player.addMarker(e));
+
         this.player.objectActions.subscribe((e) => {
             console.log('subscriber :: ', e);
             if (e.type === 'createMarker') {
                 this.markerList.push(e.object);
+
+                // @ts-ignore
+                let MarkerRect1 = structuredClone(e.object);
+                MarkerRect1.id = uid(8);
+                this.player.addMarker(MarkerRect1);
+                this.markerList.push(MarkerRect1);
+                this.player.setHomePointMarker(MarkerRect1.id, true);
+
+                console.log(this.markerList);
             }
             if (e.type === 'deleteMarker') {
                 let index = this.markerList.findIndex(i => i.id === e.object?.id);

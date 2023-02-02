@@ -580,12 +580,12 @@ export class AnnotationOSDService {
      */
     public setHomePointMarker(id : string, goHome = false) {
         let obj = this.getObjectById(id);
+        let margin = 50; // margin in pixel
         this.home = { point : {
             x : obj.getCenterPoint().x / this.imageWidth,
             y : obj.getCenterPoint().y / this.imageHeight,
         },
-        width : obj.width, height : obj.height, unit : 'pixel' };
-        console.log(this.home);
+        width : obj.width + margin, height : obj.height + margin, unit : 'pixel' };
         if (goHome) this.goHome();
         return this;
     }
@@ -779,7 +779,7 @@ export class AnnotationOSDService {
      * Return the current selected object if there is one.
      */
     public getSelectedObjectId()  : string {
-        let target = this.canvas.getActiveObject();
+        let target = this?.canvas?.getActiveObject();
         return (target as any)?.id;
     }
 
