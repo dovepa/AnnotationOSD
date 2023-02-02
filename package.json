@@ -7,6 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "publishGithubPages" : " ng add angular-cli-ghpages && ng deploy --base-href=https://dovepa.github.io/AnnotationOSD/",
     "lint": "ng lint"
   },
   "private": true,

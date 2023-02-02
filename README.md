@@ -1,27 +1,27 @@
-# AnnotationOSD2
+# AnnotationOSD
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.6.
+This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.0.
 
-## Development server
+![image info](https://github.com/dovepa/AnnotationOSD/blob/master/projects/annotation-osd-showcase/src/assets/screenshot.png?raw=true)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+**Demo Here :https://dovepa.github.io/AnnotationOSD/**
 
-## Code scaffolding
+**NPM : https://www.npmjs.com/package/ng-annotation-osd**
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+**Source Code here : https://github.com/dovepa/AnnotationOSD**
 
-## Build
+For use it, add :
+>"scripts": [
+"node_modules/annotation-osd/assets/openseadragon.min.js",
+"node_modules/annotation-osd/assets/fabric.adapted.js",
+"node_modules/annotation-osd/assets/openseadragon-fabricjs-overlay.js"
+]
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+inside angular.json
 
-## Running unit tests
+And  add :
+>  providers: [
+AnnotationOSDService
+],
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+inside app.module.ts

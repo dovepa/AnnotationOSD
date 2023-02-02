@@ -1,6 +1,6 @@
 {
   "name": "ng-annotation-osd",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "peerDependencies": {
     "@angular/common": "^13.2.0",
     "@angular/core": "^13.2.0",
@@ -13,5 +13,9 @@
   "devDependencies": {
     "@types/fabric": "^4.5.15",
     "@types/openseadragon": "^3.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dovepa/AnnotationOSD"
   }
 }

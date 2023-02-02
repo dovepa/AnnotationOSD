@@ -105,15 +105,8 @@ export class AppComponent implements OnInit {
             console.log('subscriber :: ', e);
             if (e.type === 'createMarker') {
                 this.markerList.push(e.object);
-
-                // @ts-ignore
-                let MarkerRect1 = structuredClone(e.object);
-                MarkerRect1.id = uid(8);
-                this.player.addMarker(MarkerRect1);
-                this.markerList.push(MarkerRect1);
-                this.player.setHomePointMarker(MarkerRect1.id, true);
-
-                console.log(this.markerList);
+                let id = (e.object as any).id;
+                this.player.setHomePointMarker(id, true);
             }
             if (e.type === 'deleteMarker') {
                 let index = this.markerList.findIndex(i => i.id === e.object?.id);
