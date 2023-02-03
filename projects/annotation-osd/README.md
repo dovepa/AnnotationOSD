@@ -23,10 +23,11 @@ Whether working on an image analysis project or just in need of a simple annotat
 [See Npm Package](https://www.npmjs.com/package/ng-annotation-osd)
 
 
-###Special thanks to Tchek for making this research project open source
+### Special thanks to [Tchek.ai](https://tchek.ai) for making this research project open source
+
 ![image info](https://github.com/dovepa/AnnotationOSD/blob/master/projects/annotation-osd-showcase/src/assets/Logo-black.svg?raw=true)
 
-[Go to Tchek.ai](https://tchek.ai)
+
 
 ### How To use it :
 For use it, add scripts inside angular.json
