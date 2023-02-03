@@ -810,6 +810,8 @@ export class AnnotationOSDService {
      * Cancel draw
      */
     public cancelDrawMode() : AnnotationOSDService {
+        this.deleteMarker(this.drawOptions.data.id);
+        this.deleteTmpPoly();
         // @ts-ignore
         this.drawOptions =  { isDrawing : false };
         return this;
@@ -923,6 +925,20 @@ export class AnnotationOSDService {
         } as fabric.IRectOptions);
         this.drawOptions.data.objTmp.setControlsVisibility({ mtr: false });
         this.canvas.add(this.drawOptions.data.objTmp);
+    }
+
+    /**
+     * Delete tmp of polygon drawing
+     * @private
+     */
+    private deleteTmpPoly() {
+        const objectList = this.canvas.getObjects();
+        objectList.map(obj => {
+            if (obj.type === 'MarkerPolyTmp' || obj.type === 'MarkerPolyLine' || obj.type === 'MarkerPolyDot') {
+                this.canvas.remove(obj);
+            }
+        });
+        this.canvas.renderAll();
     }
 
     /**
