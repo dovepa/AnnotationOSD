@@ -32,9 +32,9 @@ Whether working on an image analysis project or just in need of a simple annotat
 ### How To use it :
 For use it, add scripts inside angular.json
 >"scripts": [\
-"node_modules/annotation-osd/assets/openseadragon.min.js",\
-"node_modules/annotation-osd/assets/fabric.adapted.js",\
-"node_modules/annotation-osd/assets/openseadragon-fabricjs-overlay.js"\
+"node_modules/ng-annotation-osd/assets/openseadragon.min.js",\
+"node_modules/ng-annotation-osd/assets/fabric.adapted.js",\
+"node_modules/ng-annotation-osd/assets/openseadragon-fabricjs-overlay.js"\
 ]
 
 And  add providers inside app.module.ts
