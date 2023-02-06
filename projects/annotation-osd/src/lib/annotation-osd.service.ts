@@ -10,7 +10,7 @@ import {
     MarkerPoly,
     MarkerRect,
     MarkerRound,
-    PlayerType, Point,
+    Point,
     RegionOfInterest,
 } from './annotation-osd.model';
 
@@ -54,7 +54,7 @@ export class AnnotationOSDService {
      * @param debug set true to active debug mode on player.
      * @param debugImage set true to active debug image on player.
      */
-    constructor(@Inject(Boolean) debugImage : boolean = false, @Inject(Boolean) debug : boolean = false) {
+    constructor(@Inject(Boolean) debug : boolean = false, @Inject(Boolean) debugImage : boolean = false) {
         this.DEBUGImage = debugImage;
         this.DEBUG = debug;
     }
@@ -172,24 +172,28 @@ export class AnnotationOSDService {
      * @param id Id of player inside html.
      * @param link Link to image.
      */
-    public playerFactory(type: PlayerType, id: string, link: string): Promise<AnnotationOSDService> {
+    public playerFactory(data : OpenSeadragon.Options): Promise<AnnotationOSDService> {
+        data.gestureSettingsTouch ??=  { pinchRotate: false } as OpenSeadragon.GestureSettings;
+        data.showRotationControl ??= false;
+        data.showNavigationControl ??=  false;
+        data.showFlipControl ??= false;
+        data.maxZoomPixelRatio ??=  5;
+        data.zoomPerClick ??=  1;
+        data.maxZoomLevel ??= 500;
+        data.imageLoaderLimit ??=  1;
+        data.constrainDuringPan ??= true;
+        data.debugMode = this.DEBUG;
 
-        let options = {
-            id,
-            tileSources: type === 'dzi' ? link : { type: 'image', url: link },
-            gestureSettingsTouch: { pinchRotate: false } as OpenSeadragon.GestureSettings,
-            showRotationControl: false,
-            showNavigationControl: false,
-            showFlipControl: false,
-            maxZoomPixelRatio : 5,
-            zoomPerClick: 1,
-            maxZoomLevel: 500,
-            imageLoaderLimit: 1,
-            constrainDuringPan: true,
-            // debugMode: this.DEBUG,
-        };
+        /**
+         * how use tileSources :
+         *  -   For xml dzi file url :
+         *      tileSources: url
+         *  -   For a jpeg file url :
+         *      { type: 'image', url: url }
+         */
+
         if (this.DEBUGImage) {
-            (options as any).tileSources = {
+            data.tileSources = {
                 Image: {
                     xmlns: 'https://schemas.microsoft.com/deepzoom/2008',
                     Url: '//openseadragon.github.io/example-images/duomo/duomo_files/',
@@ -202,11 +206,11 @@ export class AnnotationOSDService {
                     },
                 },
             };
-            (options as any).prefixUrl = '//openseadragon.github.io/openseadragon/images/';
+            data.prefixUrl = '//openseadragon.github.io/openseadragon/images/';
         }
 
         return new Promise((resolve) => {
-            this.viewer = OpenSeadragon(options);
+            this.viewer = OpenSeadragon(data);
             const subjectZoom: Subject<any> = new Subject();
             this.viewer.addHandler('zoom', (e: any) => {
                 subjectZoom.next(e);
@@ -216,15 +220,15 @@ export class AnnotationOSDService {
                 this.resetStrokeWidth();
             });
 
-
             this.viewer.addOnceHandler('open', () => {
                 this.calculateRatio();
                 resolve(this);
             });
 
             this.viewer.addHandler('canvas-drag', (event) => {
-                if (this.drawOptions?.isDrawing)
+                if (this.drawOptions?.isDrawing) {
                     event.preventDefaultAction = true;
+                }
             });
 
             const subjectResize: Subject<any> = new Subject();
@@ -313,7 +317,6 @@ export class AnnotationOSDService {
         fabric.Object.prototype.objectCaching = false; // no cache on canvas
         fabric.Object.prototype.strokeUniform = true; // border keep size
         fabric.Object.prototype.noScaleCache = false; // scale no blur
-        fabric.Object.prototype.perPixelTargetFind = true; // select object by pixel not by area
         this.canvas.hoverCursor = 'pointer';
         this.canvas.moveCursor = 'Handwriting';
         this.canvas.hoverCursor = 'pointer';
@@ -425,28 +428,13 @@ export class AnnotationOSDService {
             this.moveDraw(o.e);
         });
 
-        this.canvas.on('mouse:up', () => {
+        this.canvas.on('mouse:up', (o) => {
             this.validateDraw();
         });
 
         this.canvas.on('mouse:move', (options) => {
-            if (this.drawOptions.isDrawing && this.drawOptions.data.activeLine && this.drawOptions.data.activeLine.class === 'line') {
-                const pointer = this.canvas.getPointer(options.e);
-                this.drawOptions.data.activeLine.set({ x2: pointer.x, y2: pointer.y });
-
-                const points = this.drawOptions.data.activeShape.get('points');
-                points[this.drawOptions.data.pointArray.length] = {
-                    x: pointer.x,
-                    y: pointer.y,
-                };
-                this.drawOptions.data.activeShape.set({
-                    points,
-                });
-                this.canvas.renderAll();
-            }
-            this.canvas.renderAll();
+            this.drawPolygonLines(options);
         });
-
     }
 
     /**
@@ -707,6 +695,7 @@ export class AnnotationOSDService {
             draggable: e.draggable,
             lockRotation: e.lockRotation,
             hasControls: e.hasControls,
+            perPixelTargetFind : e.perPixelTargetFind,
         };
 
         let unit = e.unit;
@@ -997,7 +986,7 @@ export class AnnotationOSDService {
     private addPointPoly(options : any) {
         const random = Math.floor(Math.random() * (this.drawOptions.data.max - this.drawOptions.data.min + 1)) + this.drawOptions.data.min;
         const id = new Date().getTime() + random;
-        const pos = this.canvas.getPointer(options.e);
+        const  pos = this.canvas.getPointer(options.e);
         const circle = new fabric.Circle({
             radius: this.dotRadius / this.canvas.getZoom().valueOf(),
             strokeWidth: 0,
@@ -1018,23 +1007,12 @@ export class AnnotationOSDService {
         if (this.drawOptions.data.pointArray.length === 0)
             circle.set({ fill: this.drawOptions.options.style.active.cornerColor });
 
-        const pointsA = [pos.x, pos.y, pos.x, pos.y];
-        const line = new fabric.Line(pointsA, {
-            ...this.drawOptions.options.style.hover,
-            strokeWidth: this.strokeWidth / this.canvas.getZoom(),
-            class: 'line',
-            type : 'MarkerPolyLine',
-            originX: 'center',
-            originY: 'center',
-            selectable: false,
-            hasBorders: false,
-            hasControls: false,
-            evented: false,
-            objectCaching: false,
-        } as fabric.ILineOptions);
+        let pointsA = [pos.x, pos.y, pos.x, pos.y];
 
-        if (this.drawOptions.data.activeShape) {
+        if (this.drawOptions.data.activeShape  ) {
             const pointsB = this.drawOptions.data.activeShape.get('points') as any[];
+            let lastPoint = pointsB[pointsB.length - 1];
+            pointsA = [lastPoint.x, lastPoint.y, pos.x, pos.y];
             pointsB.push({
                 x: pos.x,
                 y: pos.y,
@@ -1073,12 +1051,49 @@ export class AnnotationOSDService {
             this.drawOptions.data.activeShape = polygon;
             this.canvas.add(polygon);
         }
+
+        const line = new fabric.Line(pointsA, {
+            ...this.drawOptions.options.style.hover,
+            strokeWidth: this.strokeWidth / this.canvas.getZoom(),
+            class: 'line',
+            type : 'MarkerPolyLine',
+            originX: 'center',
+            originY: 'center',
+            selectable: false,
+            hasBorders: false,
+            hasControls: false,
+            evented: false,
+            objectCaching: false,
+        } as fabric.ILineOptions);
+
         this.drawOptions.data.activeLine = line;
         this.drawOptions.data.pointArray.push(circle);
         this.drawOptions.data.lineArray.push(line);
         this.canvas.add(line);
         this.canvas.add(circle);
         this.bringMarkerPolyFront();
+    }
+
+
+    private drawPolygonLines(options : fabric.IEvent) {
+        if (this.drawOptions.isDrawing && this.drawOptions.data.activeLine && this.drawOptions.data.activeLine.class === 'line') {
+
+            if (window.matchMedia('(pointer: coarse)').matches) return; // Prevent bug polyLineTmp on touch devices
+
+            const pointer = this.canvas.getPointer(options.e);
+            this.drawOptions.data.activeLine.set({ x2: pointer.x, y2: pointer.y });
+
+            const points = this.drawOptions.data.activeShape.get('points');
+            points[this.drawOptions.data.pointArray.length] = {
+                x: pointer.x,
+                y: pointer.y,
+            };
+            this.drawOptions.data.activeShape.set({
+                points,
+            });
+            this.canvas.renderAll();
+        }
+        this.canvas.renderAll();
     }
 
     /**
@@ -1088,7 +1103,8 @@ export class AnnotationOSDService {
     private bringMarkerPolyFront(obj ?: any) {
         if (obj && obj.type !== 'MarkerPoly') return;
         this.canvas.getObjects().filter((o:any) => o.type === 'MarkerPolyDot' || o.type === 'MarkerPolyLine').map((o:any) => {
-            o.bringToFront();
+            if (o.type === 'MarkerPolyDot')
+                o.bringToFront();
             o.setCoords();
         });
     }

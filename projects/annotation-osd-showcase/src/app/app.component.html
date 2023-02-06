@@ -2,8 +2,8 @@
 <div class="container-fluid p-0 m-0" >
     <div class="row h-100 m-0 p-0">
         <div class="col-12 m-0 p-0 d-flex">
-            <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark h-100" style="width: 300px; max-height: 100vh;
-"  >
+            <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark h-100" style="width: 310px;
+             max-height: 100vh; overflow-y: auto">
                 <a href="https://github.com/dovepa/AnnotationOSD"
                    class="d-flex align-items-center mb-3 mb-md-0  text-white text-decoration-none center">
                     <span class="fs-4">NG Annotation OSD</span>
@@ -44,8 +44,8 @@
                     <i class="bi bi-x"></i> Clear canvas
                 </button>
 
-                <hr>
-                <div style="overflow-y: auto; height: 100%;">
+                <hr *ngIf="markerList.length > 0">
+                <div  *ngIf="markerList.length > 0">
                     <div class="marker " *ngFor="let marker of markerList" [ngClass]="{'selected' : player.getSelectedObjectId() === marker.id}">
                     <div class="d-flex">
                         <span class="id">{{marker.id}}</span>

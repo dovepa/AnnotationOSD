@@ -8,6 +8,7 @@
 **AnnotationOSD** is an open source library ([code here](https://github.com/dovepa/AnnotationOSD))
 designed for Angular that enables the annotation of DeepZoom type images by leveraging
 other libraries such as fabricjs and openseadragon.\
+**It also works with jpeg images**.\
 With a user-friendly interface for adding, editing, and deleting annotations.\
 This library is ideal for various image annotation applications,
 including machine learning and image analysis projects.
@@ -27,9 +28,9 @@ Whether working on an image analysis project or just in need of a simple annotat
 
 ![image info](https://github.com/dovepa/AnnotationOSD/blob/master/projects/annotation-osd-showcase/src/assets/Logo-black.svg?raw=true)
 
+#### If you use this library, let me know on [linkedin](https://fr.linkedin.com/in/dovepalombo)  😉
 
-
-### How To use it :
+### How To Install it :
 For use it, add scripts inside angular.json
 >"scripts": [\
 "node_modules/ng-annotation-osd/assets/openseadragon.min.js",\
@@ -41,5 +42,9 @@ And  add providers inside app.module.ts
 >  providers: [\
 AnnotationOSDService\
 ]
+
+### How To use it :
+
+The demo project's page code is available [here](https://github.com/dovepa/AnnotationOSD/blob/master/projects/annotation-osd-showcase/src/app/app.component.tshttps://github.com/dovepa/AnnotationOSD/blob/master/projects/annotation-osd-showcase/src/app/app.component.ts).
 
 This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.0.

@@ -1,4 +1,3 @@
-export type PlayerType = 'image' | 'dzi';
 export type UnitType = 'percent' | 'pixel';
 export type MarkersType = 'MarkerRound' | 'MarkerPoly' | 'MarkerRect';
 export type EventObjectType =
@@ -104,6 +103,7 @@ export interface FabricStyle {
 }
 
 export interface FabricOptions {
+    perPixelTargetFind : boolean,  // set true to select object by pixel not by area
     selectable: boolean,
     hasBorders: boolean,
     transparentCorners: boolean,

@@ -41,6 +41,7 @@ export class AppComponent implements OnInit {
         transparentCorners: false,
         draggable: true,
         lockRotation: true,
+        perPixelTargetFind : true,
         hasControls: true,
     };
 
@@ -91,12 +92,11 @@ export class AppComponent implements OnInit {
     }
 
     async ngOnInit() {
-        this.player = new AnnotationOSDService(true);
-        await this.player.playerFactory(
-            'image',
-            'player',
-            'https://www.auto-moto.com/wp-content/uploads/sites/9/2022/02/01-peugeot-208-750x410.jpg',
-        );
+        this.player = new AnnotationOSDService(false, true);
+        await this.player.playerFactory({
+            id : 'player',
+
+        });
         this.player.addCanvas();
 
         this.markerList.forEach(e => this.player.addMarker(e));
