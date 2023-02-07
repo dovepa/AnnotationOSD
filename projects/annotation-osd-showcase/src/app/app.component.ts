@@ -139,7 +139,6 @@ export class AppComponent implements OnInit {
         this.createCanvas({
             id: 'player',
         });
-        this.canvasListner();
     }
 }
 

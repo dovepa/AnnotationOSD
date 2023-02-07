@@ -45,6 +45,6 @@ AnnotationOSDService\
 
 ### How To use it :
 
-The demo project's page code is available [here](https://github.com/dovepa/AnnotationOSD/blob/master/projects/annotation-osd-showcase/src/app/app.component.tshttps://github.com/dovepa/AnnotationOSD/blob/master/projects/annotation-osd-showcase/src/app/app.component.ts).
+The demo project's page code is available [here](https://github.com/dovepa/AnnotationOSD/blob/master/projects/annotation-osd-showcase/src/app/app.component.ts).
 
 This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.0.
