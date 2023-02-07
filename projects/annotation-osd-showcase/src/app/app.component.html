@@ -1,78 +1,111 @@
-
-<div class="container-fluid p-0 m-0" >
+<div class="container-fluid p-0 m-0">
     <div class="row h-100 m-0 p-0">
         <div class="col-12 m-0 p-0 d-flex">
             <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark h-100" style="width: 310px;
              max-height: 100vh; overflow-y: auto">
-                <a href="https://github.com/dovepa/AnnotationOSD"
-                   class="d-flex align-items-center mb-3 mb-md-0  text-white text-decoration-none center">
+                <a class="d-flex align-items-center mb-3 mb-md-0  text-white text-decoration-none center"
+                   href="https://github.com/dovepa/AnnotationOSD">
                     <span class="fs-4">NG Annotation OSD</span>
                 </a>
-                <a href="https://github.com/dovepa" class="d-flex center align-items-center mb-3  text-white text-decoration-none">
+                <a class="d-flex center align-items-center mb-3  text-white text-decoration-none"
+                   href="https://github.com/dovepa">
                     Made By DovePA</a>
-                <a href="https://www.tchek.ai/" class="d-grid center align-items-center   text-white text-decoration-none">
-                    <span style="text-align: center;" class="mb-3" >Special thanks to Tchek for making this research project open source</span>
-                    <img style="width: 119px; height: auto;  margin: auto;"src="assets/Logo.svg">
+                <a class="d-grid center align-items-center   text-white text-decoration-none"
+                   href="https://www.tchek.ai/" >
+                    <span class="mb-3" style="text-align: center;">Special thanks to Tchek for making this research project open source</span>
+                    <img src="assets/Logo.svg" style="width: 119px; height: auto;  margin: auto;">
                 </a>
 
                 <hr>
-                <button type="button" class="btn btn-light m-2" *ngIf="!player.isDrawing()" (click)="testCanvas()">
+                <div *ngIf="!player || !player.isDrawing()" class="form-check form-switch m-2" (click)="changeImage()">
+                    <input class="form-check-input" type="checkbox" id="debugMode" checked>
+                    <label class="form-check-label" for="debugMode">Debug mode</label>
+                </div>
+
+                <button (click)="testCanvas()" *ngIf="!player.isDrawing()" class="btn btn-light m-2" type="button">
                     <i class="bi bi-info-circle-fill"></i> Run Test
                 </button>
 
-                <button type="button" class="btn btn-success m-2" (click)="player.unsetHome(true)">
+                <button (click)="player.unsetHome(true)" class="btn btn-success m-2" type="button">
                     <i class="bi bi-house"></i> Go Home
                 </button>
 
-                <button type="button" class="btn btn-primary m-2" *ngIf="!player.isDrawing()" (click)="newMarker('MarkerRect')">
+                <button (click)="newMarker('MarkerRect')" *ngIf="!player.isDrawing()" class="btn btn-primary m-2"
+                        type="button">
                     <i class="bi bi-bounding-box-circles"></i> New Marker Rect
                 </button>
 
-                <button type="button" class="btn btn-primary m-2" *ngIf="!player.isDrawing()" (click)="newMarker('MarkerRound')">
+                <button (click)="newMarker('MarkerRound')" *ngIf="!player.isDrawing()" class="btn btn-primary m-2"
+                        type="button">
                     <i class="bi bi-circle"></i> New Marker Round
                 </button>
 
-                <button type="button" class="btn btn-primary m-2" *ngIf="!player.isDrawing()" (click)="newMarker('MarkerPoly')">
+                <button (click)="newMarker('MarkerPoly')" *ngIf="!player.isDrawing()" class="btn btn-primary m-2"
+                        type="button">
                     <i class="bi bi-pentagon"></i> New Marker Poly
                 </button>
 
-                <button type="button" class="btn btn-danger m-2" *ngIf="player.isDrawing()"  (click)="player.cancelDrawMode();">
+                <button (click)="player.cancelDrawMode();" *ngIf="player.isDrawing()" class="btn btn-danger m-2"
+                        type="button">
                     <i class="bi bi-x"></i> Cancel
                 </button>
 
-                <button type="button" class="btn btn-danger m-2" *ngIf="!player.isDrawing()" (click)="player.clear()">
+                <button (click)="player.clear()" *ngIf="!player.isDrawing()" class="btn btn-danger m-2" type="button">
                     <i class="bi bi-x"></i> Clear canvas
                 </button>
 
+                <span *ngIf="!player.isDrawing()">
+                <hr>
+                <span>Test with yout own image : </span>
+                <div class="m-2 d-flex">
+                    <div class="input-group w-100">
+                      <span class="input-group-text" id="basic-addon1">
+                        <span class="bi bi-card-image"></span>
+                      </span>
+                        <input aria-describedby="basic-addon1" aria-label="Open url image (.dzi or not)"
+                               class="form-control"
+                               id="urlInput"
+                               placeholder="{{imageUrl || 'Image Url'}}" type="text">
+                    </div>
+                     <button (click)="changeImage()" class="btn btn-success ms-2" type="button">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                </button>
+                </div>
+                </span>
+
                 <hr *ngIf="markerList.length > 0">
-                <div  *ngIf="markerList.length > 0">
-                    <div class="marker " *ngFor="let marker of markerList" [ngClass]="{'selected' : player.getSelectedObjectId() === marker.id}">
-                    <div class="d-flex">
-                        <span class="id">{{marker.id}}</span>
-                        <button type="button" class="btn btn-success me-1" (click)="player.setHomePointMarker(marker.id, true)">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                        <button type="button" class="btn btn-danger" (click)="player.deleteMarker(marker.id)">
-                            <i class="bi bi-x"></i>
-                        </button>
-                    </div>
-                    <div class="d-grid">
-                        <span class="data" *ngIf="marker.width">width : {{marker.width.toFixed(8)}}</span>
-                        <span class="data" *ngIf="marker.height">height : {{marker.height.toFixed(8)}}</span>
+                <div *ngIf="markerList.length > 0">
+                    <div *ngFor="let marker of markerList"
+                         [ngClass]="{'selected' : player.getSelectedObjectId() === marker.id}"
+                         class="marker ">
+                        <div class="d-flex">
+                            <span class="id">{{marker.id}}</span>
+                            <button (click)="player.setHomePointMarker(marker.id, true)" class="btn btn-success me-1"
+                                    type="button">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button (click)="player.deleteMarker(marker.id)" class="btn btn-danger" type="button">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
+                        <div class="d-grid">
+                            <span *ngIf="marker.width" class="data">width : {{marker.width.toFixed(8)}}</span>
+                            <span *ngIf="marker.height" class="data">height : {{marker.height.toFixed(8)}}</span>
 
-                        <span class="data" *ngIf="marker.centerX">centerX : {{marker.centerX.toFixed(8)}}</span>
-                        <span class="data" *ngIf="marker.centerY">centerY : {{marker.centerY.toFixed(8)}}</span>
-                        <span class="data">unit : {{marker.unit}}</span>
+                            <span *ngIf="marker.centerX" class="data">centerX : {{marker.centerX.toFixed(8)}}</span>
+                            <span *ngIf="marker.centerY" class="data">centerY : {{marker.centerY.toFixed(8)}}</span>
+                            <span class="data">unit : {{marker.unit}}</span>
 
-                        <span class="data d-grid" *ngIf="marker.dots">
+                            <span *ngIf="marker.dots" class="data d-grid">
                             <span>Point List :</span>
-                            <span *ngFor="let dot of marker.dots">x : {{dot.x.toFixed(5)}}, y : {{dot.y.toFixed(5)}}</span>
+                            <span *ngFor="let dot of marker.dots">x : {{dot.x.toFixed(5)}}
+                                , y : {{dot.y.toFixed(5)}}</span>
                         </span>
-                    </div>
+                        </div>
                     </div>
                 </div>
             </div>
-                <div id="player" class="canvas"></div>
+            <div class="canvas" id="player"></div>
         </div>
     </div>
 </div>

@@ -45,8 +45,8 @@ export class AppComponent implements OnInit {
         hasControls: true,
     };
 
+    imageUrl : string;
     markerList : any[] = [];
-
 
     async sleep(time = 500) { return new Promise((r) => setTimeout(r, time));}
 
@@ -91,16 +91,16 @@ export class AppComponent implements OnInit {
         });
     }
 
-    async ngOnInit() {
-        this.player = new AnnotationOSDService(false, true);
-        await this.player.playerFactory({
-            id : 'player',
-
-        });
+    async createCanvas(data :  OpenSeadragon.Options) {
+        let debug = ( document.getElementById('debugMode') as any )?.checked;
+        this.player = new AnnotationOSDService(debug, !data.tileSources);
+        await this.player.playerFactory(data);
         this.player.addCanvas();
+        this.canvasListner();
+    }
 
+    async canvasListner() {
         this.markerList.forEach(e => this.player.addMarker(e));
-
         this.player.objectActions.subscribe((e) => {
             console.log('subscriber :: ', e);
             if (e.type === 'createMarker') {
@@ -122,7 +122,24 @@ export class AppComponent implements OnInit {
                 this.markerList = [];
             }
         });
+    }
 
+    async changeImage() {
+        let url = (document.getElementById('urlInput') as any).value;
+        if (url) this.imageUrl = url;
+        
+        this.player.delete();
+        this.createCanvas({
+            id: 'player',
+            tileSources : this.imageUrl,
+        });
+    }
+
+    async ngOnInit() {
+        this.createCanvas({
+            id: 'player',
+        });
+        this.canvasListner();
     }
 }
 

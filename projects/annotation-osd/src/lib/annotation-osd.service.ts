@@ -21,6 +21,8 @@ export declare let OpenSeadragon: TypeOpenSeadragon;
 export declare type TypeFabric = typeof import('fabric/fabric-impl');
 export declare let fabric: TypeFabric;
 
+// TODO : add mutli tileSources option
+
 @Injectable({
     providedIn: 'root',
 })
@@ -186,7 +188,7 @@ export class AnnotationOSDService {
 
         /**
          * how use tileSources :
-         *  -   For xml dzi file url :
+         *  -   For xml .dzi file url :
          *      tileSources: url
          *  -   For a jpeg file url :
          *      { type: 'image', url: url }
@@ -238,7 +240,6 @@ export class AnnotationOSDService {
             subjectResize.pipe(debounceTime(200)).subscribe(() => {
                 this.goHome();
             });
-
         });
     }
 
@@ -428,7 +429,7 @@ export class AnnotationOSDService {
             this.moveDraw(o.e);
         });
 
-        this.canvas.on('mouse:up', (o) => {
+        this.canvas.on('mouse:up', () => {
             this.validateDraw();
         });
 
@@ -1074,7 +1075,11 @@ export class AnnotationOSDService {
         this.bringMarkerPolyFront();
     }
 
-
+    /**
+     * Draw polygon line on cursor moving
+     * @param options
+     * @private
+     */
     private drawPolygonLines(options : fabric.IEvent) {
         if (this.drawOptions.isDrawing && this.drawOptions.data.activeLine && this.drawOptions.data.activeLine.class === 'line') {
 
